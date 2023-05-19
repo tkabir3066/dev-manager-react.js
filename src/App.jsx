@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Contacts from "./contacts/Contacts";
 import Header from "./layout/Header";
 import { Container } from "react-bootstrap";
+import AddContact from "./contacts/AddContact";
 
 const initialContacts = [
   {
@@ -97,12 +98,15 @@ function App() {
   const [contacts, setContacts] = useState(initialContacts);
 
   const deleteContact = (id) => {
-    console.log(id);
+    const updatedContacts = contacts.filter((contact) => contact.id !== id);
+
+    setContacts(updatedContacts);
   };
   return (
     <>
       <Header />
       <Container style={{ width: "800px", margin: "0 auto" }} className="pt-2">
+        <AddContact />
         <Contacts contacts={contacts} deleteContact={deleteContact} />
       </Container>
     </>
