@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import Contacts from "./contacts/Contacts";
 import Header from "./layout/Header";
 import { Container } from "react-bootstrap";
 import AddContact from "./contacts/AddContact";
+import { v4 as uuidv4 } from "uuid";
 
 const initialContacts = [
   {
@@ -102,11 +104,20 @@ function App() {
 
     setContacts(updatedContacts);
   };
+
+  const addContact = (contact) => {
+    const contactToAdd = {
+      id: uuidv4(),
+      ...contact,
+    };
+
+    setContacts([contactToAdd, ...contacts]);
+  };
   return (
     <>
       <Header />
       <Container style={{ width: "800px", margin: "0 auto" }} className="pt-2">
-        <AddContact />
+        <AddContact addContact={addContact} />
         <Contacts contacts={contacts} deleteContact={deleteContact} />
       </Container>
     </>
