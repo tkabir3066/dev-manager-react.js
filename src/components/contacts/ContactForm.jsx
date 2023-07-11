@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 const schema = yup.object({
   firstName: yup
@@ -23,6 +24,7 @@ const schema = yup.object({
   profession: yup
     .string()
     .required("profession is required")
+    .oneOf(["developer", "designer", "marketer"])
     .min(3, "profession must be minimum 3 characters"),
   image: yup
     .string()
@@ -34,7 +36,7 @@ const schema = yup.object({
     .min(10, "profession must be minimum 10 characters")
     .max(300, "Bio must be maximum 300 characters"),
 });
-function AddContact({ addContact }) {
+function ContactForm({ addContact }) {
   const [startDate, setStartDate] = useState(new Date());
 
   const {
@@ -46,6 +48,19 @@ function AddContact({ addContact }) {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const defaultValues = {
+    firstName: "Tutul",
+    lastName: "Kabir",
+    email: "tutulkabir@gmail.com",
+    image: "https://randomuser.me/api/portraits/men/76.jpg",
+    gender: "male",
+    profession: "developer",
+    bio: "Hi this is Tutul, a front end developer",
+  };
+
+  const { firstName, lastName, email, image, gender, profession, bio } =
+    defaultValues;
 
   useEffect(() => {
     setValue("dateOfBirth", startDate);
@@ -63,7 +78,14 @@ function AddContact({ addContact }) {
       });
     }
   }, [isSubmitSuccessful]);
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    // show  flash message
+    toast.success("Contact is added successfully", {
+      position: "top-right",
+    });
+    // adding contact
+    addContact(data);
+  };
 
   return (
     <>
@@ -81,7 +103,7 @@ function AddContact({ addContact }) {
             <Form.Control
               type="text"
               id="firstName"
-              defaultValue=""
+              defaultValue={firstName}
               {...register("firstName")}
               isInvalid={errors?.firstName}
               placeholder="Enter your First Name"
@@ -103,7 +125,7 @@ function AddContact({ addContact }) {
             <Form.Control
               type="text"
               id="lastName"
-              defaultValue=""
+              defaultValue={lastName}
               {...register("lastName")}
               isInvalid={errors?.lastName}
               placeholder="Enter your Last Name"
@@ -125,7 +147,7 @@ function AddContact({ addContact }) {
             <Form.Control
               type="email"
               id="email"
-              defaultValue=""
+              defaultValue={email}
               {...register("email")}
               isInvalid={errors?.email}
               placeholder="Enter your email id"
@@ -144,14 +166,29 @@ function AddContact({ addContact }) {
           </Col>
 
           <Col sm={9}>
-            <Form.Control
+            {/* <Form.Control
               type="text"
               id="profession"
               defaultValue=""
               {...register("profession")}
               isInvalid={errors?.profession}
               placeholder="Enter your Profession"
-            />
+            /> */}
+
+            <Form.Select
+              id="profession"
+              {...register("profession")}
+              defaultValue={profession}
+              isInvalid={errors?.profession}
+              aria-label="Select your profession"
+            >
+              <option value="" disabled>
+                Select Your Profession
+              </option>
+              <option value="developer">Developer</option>
+              <option value="designer">Designer</option>
+              <option value="marketer">Marketer</option>
+            </Form.Select>
             <Form.Control.Feedback type="invalid">
               {errors?.profession?.message}
             </Form.Control.Feedback>
@@ -170,7 +207,7 @@ function AddContact({ addContact }) {
               type="text"
               name="image"
               id="image"
-              defaultValue=""
+              defaultValue={image}
               {...register("image")}
               isInvalid={errors?.image}
               placeholder="Enter your profile picture url"
@@ -242,7 +279,7 @@ function AddContact({ addContact }) {
               as="textarea"
               type="text"
               id="bio"
-              defaultValue=""
+              defaultValue={bio}
               {...register("bio")}
               isInvalid={errors?.bio}
               placeholder="Enter your Bio"
@@ -253,7 +290,12 @@ function AddContact({ addContact }) {
           </Col>
         </Form.Group>
 
-        <Button variant="primary" size="md" type="submit">
+        <Button
+          variant="primary"
+          size="md"
+          type="submit"
+          disabled={isSubmitting ? "disabled" : ""}
+        >
           Add Contact
         </Button>
       </Form>
@@ -261,4 +303,4 @@ function AddContact({ addContact }) {
   );
 }
 
-export default AddContact;
+export default ContactForm;

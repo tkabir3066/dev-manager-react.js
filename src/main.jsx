@@ -4,6 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-datepicker/dist/react-datepicker.css";
+import "react-toastify/dist/ReactToastify.min.css";
 // === Dev Manager ==//
 // CRUD
 // Form Handling
